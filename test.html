@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+	<style>
+	
+	</style>
+	<script src="jquery.js" type="text/javascript"></script>
+</head>
+
+<body>
+<ul id='lst'>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+	<li>Apple</li>
+	<li>IBM</li>
+	<li>Microsoft</li>
+</ul>
+<div style="display:none">
+<span style="">✉</span>
+<div id="questionTemplate" style="height:48px;width:48px;padding:0;margin:0;position:absolute;"><span style="font-size:48px;line-height:48px;">✎</span>
+	<div class="dialog" style="position:absolute;top:40px;border:1px solid #ccc; width:256px; min-height:64px;padding:4px">
+		<textarea class="question" style="overflow:hidden;font-size:12px;width:250px;height:18px;line-height:18px;resize: none;"></textarea>
+		<div style="text-align:right">
+			<button class="ask">Ask</button>
+		</div>
+		<div class="session">
+			<div style="border-top:1px solid #e3efea;margin:2px;">
+			<div style="float:left;width:32px;height:32px;font-size:32px;text-align:center;line-height:32px">
+				☺
+			</div>
+			<div style="margin-left:40px;">Could you give me an example how to make a sentence with 'work off'</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<script>
+(function(){
+	var current, overlay;
+
+	document.body.addEventListener('mousemove', move);
+	document.body.addEventListener('click', select);
+
+	function addOverlay(el) {
+	    var rect = el.getBoundingClientRect(),
+        	overlay = document.createElement('div'),
+        	scrollTop = document.body.scrollTop,
+        	scrollLeft = document.body.scrollLeft;
+
+        overlay.setAttribute('style', 'pointer-events:none;position:absolute;margin:0;padding:0;background-color:#b4c6d7;opacity:0.6;z-index:10000')
+        overlay.style.top = (rect.top + scrollTop) - 10 + 'px';
+        overlay.style.left = (rect.left + scrollLeft) - 10 + 'px';
+        overlay.style.width = (rect.width - 2) + 20 + 'px';
+        overlay.style.height = (rect.height - 2) + 20 + 'px';
+        document.body.appendChild(overlay);
+	    
+	    return overlay;
+	}
+
+	function select(e){
+		if(current) {
+			console.log(current);
+			window.__question = createQuestion(e.x + document.body.scrollLeft, e.y + document.body.scrollTop)
+			current = null;
+		}
+
+		if(overlay) {
+			overlay.parentElement.removeChild(overlay);
+			overlay = null;
+		}
+
+		document.body.removeEventListener('click', select);
+		document.body.removeEventListener('mousemove', move);
+	}
+
+	function move(e){
+		var el = document.elementFromPoint(e.x, e.y);
+		if(current != el) {
+			current = el;
+			if(overlay)
+				overlay.parentElement.removeChild(overlay);
+			overlay = addOverlay(current);
+		}
+	}
+
+	function createQuestion(x, y){
+		var tmpl = '<div style="z-index:10000;height:48px;width:48px;padding:0;margin:0;position:absolute;"><span style="font-size:48px;line-height:48px;-webkit-user-select:none;color:blue" class="status">✎</span>\
+	<div class="dialog" style="background-color:white;position:absolute;top:40px;border:1px solid #ccc; width:256px; min-height:64px;padding:4px">\
+		<textarea class="question" style="overflow:hidden;font-size:12px;width:250px;height:18px;line-height:18px;resize: none;"></textarea>\
+		<div style="text-align:right">\
+			<button class="ask">Ask</button>\
+		</div>\
+		<div class="session"></div>\
+	</div>\
+</div>',
+			$el = $(tmpl),
+			$dialog = $el.find('.dialog'),
+			$status = $el.find('.status'),
+			$question = $el.find('.question'),
+			$ask = $el.find('.ask'),
+			$session = $el.find('.session');
+
+		$el.css({left:x, top:y, opacity:.5});
+		$dialog.hide();
+
+		$el.mouseover(function(){
+			$el.css({opacity:1});
+			$dialog.show();
+		});
+
+		$el.mouseout(function(){
+			$el.css({opacity:.5});
+			$dialog.hide();
+			$el.unbind('mousemove').unbind('mouseup');
+		});
+
+		$ask.click(function(){
+			var q = $question.val();
+			$question.val('');
+			$status.html('✎');
+			$status.css('color', 'blue');
+			$session.prepend('<div style="border-top:1px solid #e3efea;margin:2px;overflow:auto;">\
+	<div style="float:left;width:32px;height:32px;font-size:32px;text-align:center;line-height:32px">☺</div>\
+	<div style="margin-left:40px;">' + q + '</div></div>');
+		});
+
+		$el.mousedown(function(e){
+			var x = e.pageX, y = e.pageY, x1 = $el.position().left, y1 = $el.position().top;
+			$el.mousemove(function(e){
+				var dx = e.pageX - x, dy = e.pageY - y;
+				$el.css({left:x1 + dx, top:y1 + dy});
+			}).mouseup(function(e){
+				$el.unbind('mousemove').unbind('mouseup');
+			});
+		});
+
+		$('body').append($el);
+
+		return {
+			answer: function(content){
+				$session.prepend('<div style="border-top:1px solid #e3efea;margin:2px;overflow:auto;"><div style="float:left;width:32px;height:32px;font-size:32px;text-align:center;line-height:32px">☻</div><div style="margin-left:40px;">' + content + '</div></div>');
+		
+				$status.html('✉');
+				$status.css('color', 'red');
+			}
+		}
+	}
+})();
+</script>
+</body>
+</html>
