@@ -16,7 +16,11 @@
 		selected,
 		overlay,
 		dialog, 
-		tip;
+		tip,
+		teacherTmpl,
+		studentTmpl,
+		tips = [],
+		noop = function(){};
 
 	var $ = {
 		dom : function(html) {
@@ -33,13 +37,24 @@
 		    var i, key;
 			if (elements.length != undefined) {
 			  for (i = 0; i < elements.length; i++)
-			    if (callback.call(elements[i], i, elements[i]) === false) return elements;
+			    if (callback.call(elements[i], elements[i], i) === false) return elements;
 			} else {
 			  for (key in elements)
-			    if (callback.call(elements[key], key, elements[key]) === false) return elements;
+			    if (callback.call(elements[key], elements[key], key) === false) return elements;
 			}
 
 			return elements;
+		},
+
+		template: function(html) {
+			return function(val){
+				return $.dom(html.replace('{content}', val));
+			};
+		},
+
+		message: function(method) {
+		  var args = Array.prototype.slice.call(arguments, 1);
+		  return JSON.stringify({method:method, args:args});
 		}
 	}
 	
@@ -60,10 +75,6 @@
 	}
 	
 	function select(e){
-		if(selected) {
-			selected = null;
-		}
-		
 		if(overlay) {
 			overlay.parentElement.removeChild(overlay);
 			overlay = null;
@@ -72,8 +83,17 @@
 		var x = e.x + document.body.scrollLeft,
 			y = e.y + document.body.scrollTop;		 
 		
-		createTip(x, y);
-		
+		if(selected) {
+			var id = tips.length,
+				tip = createTip(id, selected, x, y);
+			tip.ask(function(text){
+				postMessage('ask', id, text);
+			});
+			tips.push(tip);
+			postMessage('new', id, selected.innerText, location.href);
+			selected = null;
+		}
+
 		document.body.removeEventListener('click', select);
 		document.body.removeEventListener('mousemove', move);
 	}
@@ -91,59 +111,165 @@
 		}
 	}
 	
-	function createTip(x, y){
+	function createTip(id, selected, x, y){
 		var el = tip.cloneNode(true),
-			dialog = createDialog(x, y + 42);
+			dialog = createDialog(x, y + 42),
+			overlay,
+			defer,
+			onask=noop;
 		
 		el.style.left = x + 'px';
-		el.style.top = y + 'px';		
+		el.style.top = y + 'px';
+		el.style.opacity = .6;
+
 		el.onmouseover = function() {
-			dialog.style.display = 'block';
-			console.log(1);
+			dialog.el.style.display = 'block';
+			el.style.opacity = 1;
+			overlay = addOverlay(selected);
+			clearTimeout(defer);
 		};
 		
 		el.onmouseout = function() {
-			dialog.style.display = 'none';			
-			console.log(2);
+			defer = setTimeout(function(){
+				dialog.el.style.display = 'none';	
+			}, 500);
+						
+			el.style.opacity = .9;
+			overlay.parentElement.removeChild(overlay);
 		}
 		
+		dialog.el.addEventListener('mouseover', function(){
+			clearTimeout(defer);
+		});
+
+		dialog.ask(function(text){
+			el.style.backgroundImage = 'url(http://localhost:9990/coffee.png)';
+			onask(text);
+		});
+
 		document.body.appendChild(el);
+
+		draggable(el, dialog.el);
+
+		return {
+			el : el,
+			answer : function(html){
+				el.style.backgroundImage = 'url(http://localhost:9990/mail.png)';
+				dialog.answer(html);
+			},
+			ask : function(callback) {
+				onask = callback;
+			}
+		};
 	}
 	
 	function createDialog(x, y){
-		var el = dialog.cloneNode(true);
+		var el = dialog.cloneNode(true),
+			question = el.querySelector('.question'),
+			ask = el.querySelector('.ask'),
+			toolbar = el.querySelector('.toolbar'),
+			defer,
+			onask = noop;
 		
 		el.style.left = x + 'px';
 		el.style.top = y + 'px';
 		el.style.display = 'none';
 		
 		el.onmouseover = function() {
-			el.style.display = 'block';
-			console.log(1);
+			clearTimeout(defer);
 		};
 		
 		el.onmouseout = function() {
-			el.style.display = 'none';			
-			console.log(2);
-		}
+			defer = setTimeout(function(){
+				el.style.display = 'none';	
+			}, 500);			
+		};
 		
+		function talk(node){
+			toolbar.parentNode.insertBefore(node, toolbar.nextSibling);
+		}
+
+		function submit() {
+			talk(studentTmpl(question.value));
+			onask(question.value);
+			question.value = '';
+		}
+
+		ask.onclick = function() {
+			submit();	
+		};
+		
+		question.onkeypress = function(e) {
+			if (e.keyCode == '13'){
+		      submit();
+		      return false;
+		    }
+		};
+
 		document.body.appendChild(el);
 		
-		return el;
+		return {
+			el : el,
+			answer : function(html) {
+				talk(teacherTmpl(html));
+			},
+			ask : function(callback) {
+				onask = callback;
+			}
+		};
 	}
 	
+	function draggable(el){
+		var x0, y0, 
+			els = slice.call(arguments),
+			pos;
+
+		function down(e) {
+			x0 = e.pageX, y0 = e.pageY;
+			pos = [];
+			$.each(els, function(e){
+				pos.push({x:parseInt(e.style.left), y:parseInt(e.style.top)});
+			});
+
+			document.body.addEventListener('mousemove', move);
+		}
+
+		function move(e) {
+			var dx = e.pageX - x0, dy = e.pageY - y0;
+			
+			$.each(els, function(el, i){
+				el.style.left = (pos[i].x + dx) + 'px';
+				el.style.top = (pos[i].y + dy) + 'px';
+			});
+		}
+		
+		function up(e) {
+			document.body.removeEventListener('mousemove', move);
+		}
+
+		el.addEventListener('mousedown', down);
+		el.addEventListener('mouseup', up);
+		el.addEventListener('mouseout', up);
+	}
+
 	function startSelect(){
 		document.body.addEventListener('mousemove', move);
 		document.body.addEventListener('click', select);			
-	};
-	
+	}; 
+
 	window.__efrog_start_select__ = startSelect;
 
 	var reciever = {
-		init: function(dialogHTML, tipHTML) {
+		init: function(dialogHTML, tipHTML, teacherHTML, studentHTML) {
 			dialog = $.dom(dialogHTML);			
 			tip = $.dom(tipHTML);			
 			startSelect();
+			teacherTmpl = $.template(teacherHTML);
+			studentTmpl = $.template(studentHTML);
+		},
+
+		answer: function(id, html) {
+			tips[id].answer(html);
 		}
 	};
 
@@ -157,4 +283,9 @@
 	var iframe = $.dom('<iframe src="' + iframeUrl + '" name="efrog_service" style="top: 99999px; left: 99999px; position: absolute; width:1024px; height:1024px"></iframe>');
 
 	document.body.appendChild(iframe);
+
+	function postMessage(){
+		var msg = $.message.apply(null, slice.call(arguments));
+		iframe.contentWindow.postMessage(msg, '*');
+	}
 })();
