@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+	<script src="jquery.js"></script>
+	
+<style>
+html,body{margin:0;padding:0}h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,cite,code,del,dfn,em,img,q,s,samp,small,strike,strong,sub,sup,tt,var,dd,dl,dt,li,ol,ul,fieldset,form,label,legend,button,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;font-weight:normal;font-style:normal;font-size:100%;line-height:1;font-family:inherit}table{border-collapse:collapse;border-spacing:0}ol,ul{list-style:none}q:before,q:after,blockquote:before,blockquote:after{content:""}html{overflow-y:scroll;font-size:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}a:focus{outline:thin dotted}a:hover,a:active{outline:0}article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block}audio,canvas,video{display:inline-block;*display:inline;*zoom:1}audio:not([controls]){display:none}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0;-ms-interpolation-mode:bicubic}button,input,select,textarea{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle}button,input{line-height:normal;*overflow:visible}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}button,input[type="button"],input[type="reset"],input[type="submit"]{cursor:pointer;-webkit-appearance:button}input[type="search"]{-webkit-appearance:textfield;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
+body{
+	font-family: 'Helvetica Neue', arial, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 22px;
+}
+</style>
+<head>
+<body>
+<div id="tip" style="left: 100px; top: 60px;background: #fff; width: 32px; height: 32px; -webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 2px 0px;background-color:rgb(255, 255, 255);border:1px solid rgb(213, 213, 213);color:rgb(34, 34, 34);padding: 5px;text-align:start;position: absolute;">
+	<img src="http://www.iconpng.com/png/iphone_web_blue/pencil.png" style="width:32px;height:32px" />
+</div>
+
+<div id="dialog" style="z-index: 999999;left:100px; top:100px;background: #fff;width: 450px;-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 2px 0px;background-color:rgb(255, 255, 255);border:1px solid rgb(213, 213, 213);color:rgb(34, 34, 34);padding: 15px;text-align:start;position: absolute;">
+	<div style="border-color:rgb(34, 34, 34);color:rgb(34, 34, 34);text-align:start;vertical-align: middle;line-height: 42px;">                
+		<input type="text" style="-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;border:1px solid rgb(204, 204, 204);color:rgb(85, 85, 85);font-family:sans-serif;line-height:18px;padding-left:12px;padding-right:10px;padding-top:2px;width:368px;height:34px;border-radius:3px;" value="">
+		<input type="button" style="-webkit-box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;background-color:rgb(91, 183, 91);background-image:-webkit-linear-gradient(top, rgb(98, 196, 98), rgb(81, 163, 81));border-color:rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.247059);border-style:solid;border-width:1px;color:rgb(255, 255, 255);cursor:pointer;font-family:sans-serif;font-size:15px;line-height:normal;padding:9px 14px;text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;background-repeat:repeat-x;border-radius:5px;" value="Ask">
+	</div>
+	
+	<div style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
+		<img class="user" alt="Avatar" src="http://mediacdn.disqus.com/uploads/users/2196/7302/avatar92.jpg?1336454729" 
+			style="-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			display: block;
+			height: 36px;
+			width: 36px;float: left;" />
+		<div style="padding-left: 48px;min-height: 50px;">
+			<div style="color: rgb(90, 122, 155);
+				line-height: 16px;
+				font-size: 12px;
+				font-weight: 600;">Jane</div>
+			<div>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.
+			</div>
+		</div>
+	</div>
+	
+	<div style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
+		<img class="user" alt="Avatar" src="http://mediacdn.disqus.com/uploads/forums/49/33/avatar92.jpg?1363593733" 
+			style="-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			display: block;
+			height: 36px;
+			width: 36px;float: left;" />
+		<div style="padding-left: 48px;min-height: 50px;">
+			<div style="color: rgb(90, 122, 155);
+				line-height: 16px;
+				font-size: 12px;
+				font-weight: 600;">Mike</div>
+			<div>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.
+			</div>
+		</div>
+	</div>
+</div>
+  
+<script>
+var InlineStyleNames = [
+	'background-image',
+	'background-origin',
+	/*'background-size',*/
+	'border-spacing',
+	/*'border',*/
+	'border-bottom-color',
+	'border-bottom-left-radius',
+	'border-bottom-right-radius',
+	'border-bottom-style',
+	'border-bottom-width',
+	'border-left-color',
+	'border-left-style',
+	'border-left-width',
+	'border-right-color',
+	'border-right-style',
+	'border-right-width',
+	'border-top-color',
+	'border-top-left-radius',
+	'border-top-right-radius',
+	'border-top-style',
+	'border-top-width',
+	'border-image-source',
+	'bottom',
+	'clear',
+	'color',
+	'content',
+	'cursor',
+	'direction',
+	'float',
+	'font-family',
+	'font-size',
+	'font-style',
+	'font-variant',
+	'font-weight',
+	'height',
+	'left',
+	'letter-spacing',
+	'line-height',
+	'margin',
+	'max-height',
+	'max-width',
+	'min-height',
+	'min-width',
+	'outline',
+	'overflow-wrap',
+	'padding',
+	'position',
+	'quotes',
+	'right',
+	'text-decoration',
+	'text-indent',
+	'text-overflow',
+	'text-shadow',
+	'text-transform',
+	'top',
+	'unicode-bidi',
+	'visibility',
+	'white-space',
+	'width',
+	'word-break',
+	'word-spacing',
+	'z-index',
+	'border-top-left-radius',
+	'border-top-right-radius',
+	'border-bottom-left-radius',
+	'border-bottom-right-radius',
+	'box-shadow',
+	'-webkit-box-shadow',
+	'box-sizing',
+	'opacity',
+	'background-color',
+	'background-attachment',
+	'display',
+	'overflow',
+	'text-align',
+	'widows',
+	'background-position',
+	'background-repeat'
+];
+
+function traverse(root, callback){
+  if (root.nodeType === 1) {
+    callback(root);
+  }
+  
+  if (root.hasChildNodes()) {       
+    var child = root.firstChild;    
+    while(child){         
+      if (child.nodeType === 1) {        
+        traverse(child, callback);
+      }
+      child = child.nextSibling;
+    }
+  }
+}
+
+function message(method) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return JSON.stringify({method:method, args:args});
+}
+
+function inline(root) {
+	traverse(root, function(node){
+	  var style = window.getComputedStyle(node, null),
+		  inline = node.getAttribute('style') || '',
+		  sbuf = [];
+		  
+	  for(var i=0;i<InlineStyleNames.length;i++){
+		var name = InlineStyleNames[i];
+		if(inline.indexOf(name) === -1) {
+			sbuf.push(name + ':' + style.getPropertyValue(name));
+		}
+	  }
+	  
+	  node.setAttribute('style', sbuf.join(';') + ';' + inline);
+	});
+}
+
+$(function(){
+	var dialog = document.getElementById('dialog'),
+		tip = document.getElementById('tip');
+	inline(dialog);
+	inline(tip);	
+	var msg = message('init', dialog.outerHTML, tip.outerHTML);
+	window.parent.postMessage(msg, '*');
+});
+</script>
+</body>
+</html>
