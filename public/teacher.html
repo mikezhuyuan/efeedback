@@ -14,16 +14,23 @@ body{
 </style>
 <head>
 <body>
-<div id="tip" style="cursor: move !important;left: 100px; top: 60px; width: 32px; height: 32px; -webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 2px 0px;background-color:rgb(255, 255, 255);border:1px solid rgb(213, 213, 213);color:rgb(34, 34, 34);padding: 5px;text-align:start;position: absolute;background: #fff url('http://localhost:9990/pencil.png') no-repeat center;background-size:32px 32px;">
-</div>
 
-<div id="dialog" style="z-index: 9999;left:100px; top:100px;background: #fff;width: 450px;-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 2px 0px;background-color:rgb(255, 255, 255);border:1px solid rgb(213, 213, 213);color:rgb(34, 34, 34);padding: 15px;text-align:start;position: absolute;">
-	<div class="toolbar" style="border-color:rgb(34, 34, 34);color:rgb(34, 34, 34);text-align:start;vertical-align: middle;line-height: 42px;">                
-		<input class="question" type="text" style="-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;border:1px solid rgb(204, 204, 204);color:rgb(85, 85, 85);font-family:sans-serif;line-height:18px;padding-left:12px;padding-right:10px;padding-top:2px;width:360px;height:34px;border-radius:3px;" value="">
-		<input class="ask" type="button" style="-webkit-box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;background-color:rgb(91, 183, 91);background-image:-webkit-linear-gradient(top, rgb(98, 196, 98), rgb(81, 163, 81));border-color:rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.247059);border-style:solid;border-width:1px;color:rgb(255, 255, 255);cursor:pointer;font-family:sans-serif;font-size:15px;line-height:normal;padding:9px 14px;text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;background-repeat:repeat-x;border-radius:5px;" value="Ask">
+<div id="template" style="display:none">
+<div class="dialog" style="background: #fff;width: 450px;-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 2px 0px;background-color:rgb(255, 255, 255);border:1px solid rgb(213, 213, 213);color:rgb(34, 34, 34);padding: 15px;text-align:start;float: left;margin:20px">
+	<a class="url" style="display:block; margin-bottom:5px; white-space: nowrap; overflow: hidden;" href="#"></a>
+	<div class="context" style="max-height: 120px; overflow-y:auto; overflow-x:hidden; margin-bottom: 10px">
+		Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.
+		Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.
+		Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi.
+		Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc.
 	</div>
+	<form class="toolbar" style="border-color:rgb(34, 34, 34);color:rgb(34, 34, 34);text-align:start;vertical-align: middle;line-height: 42px;">                
+		<input class="answer" type="text" style="-webkit-box-shadow:rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;border:1px solid rgb(204, 204, 204);color:rgb(85, 85, 85);font-family:sans-serif;line-height:18px;padding-left:12px;padding-right:10px;padding-top:2px;width:340px;height:34px;border-radius:3px;" value="" />
+		<button class="submit" type="submit" style="-webkit-box-shadow:rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;background-color:rgb(91, 183, 91);background-image:-webkit-linear-gradient(top, rgb(196, 98, 98), rgb(163, 81, 81));border-color:rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.0980392) rgba(0, 0, 0, 0.247059);border-style:solid;border-width:1px;color:rgb(255, 255, 255);cursor:pointer;font-family:sans-serif;font-size:15px;line-height:normal;padding:9px 14px;text-shadow:rgba(0, 0, 0, 0.247059) 0px -1px 0px;background-repeat:repeat-x;border-radius:5px;">Answer</button>
+	</form>
 	
-	<div id="teacher" style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
+	<div class="list">
+	<div class="teacher" style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
 		<img class="user" alt="Avatar" src="http://mediacdn.disqus.com/uploads/users/2196/7302/avatar92.jpg?1336454729" 
 			style="-webkit-border-radius: 3px;
 			-moz-border-radius: 3px;
@@ -36,11 +43,11 @@ body{
 				line-height: 16px;
 				font-size: 12px;
 				font-weight: 600;">Jane</div>
-			<div>{content}</div>
+			<div class="content"></div>
 		</div>
 	</div>
 	
-	<div id="student" style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
+	<div class="student" style="border-top: 1px solid #ccc;padding-top: 15px;margin-top:10px">
 		<img class="user" alt="Avatar" src="http://mediacdn.disqus.com/uploads/forums/49/33/avatar92.jpg?1363593733" 
 			style="-webkit-border-radius: 3px;
 			-moz-border-radius: 3px;
@@ -53,11 +60,13 @@ body{
 				line-height: 16px;
 				font-size: 12px;
 				font-weight: 600;">Mike</div>
-			<div>{content}</div>
+			<div class="content"></div>
 		</div>
 	</div>
+	</div>
 </div>
-  
+</div>
+
 <script>
 var undefined,
 	emptyArray = [], 
@@ -97,31 +106,73 @@ window.net = (function(){
 	};
 })();
 
-var reciever = {
-	startTalk : function(id, text, url){
-		console.log(arguments);
-	},
+$(function(){	
+	var teacherHTML = $('#template .teacher').remove()[0].outerHTML,
+		studentHTML = $('#template .student').remove()[0].outerHTML,
+	 	dialogHTML = $('#template .dialog')[0].outerHTML,
+		students = {},
+		dialogs = {};
 
-	ask : function(id, text){
-		console.log(arguments);
+	function createDialog(studentId, talkId, content, url) {
+		var dialog = $(dialogHTML);
+		dialog.find('.url').html(url).attr('href', url);
+		dialog.find('.context').html(content);
+		dialog.find('form').submit(function(e){
+			var answer  = dialog.find('.answer').val(),
+				teacher = $(teacherHTML);
+			
+			dialog.find('.answer').val('');
+			teacher.find('.content').html(answer);
+			dialog.find('.list').prepend(teacher);
+
+			window.net.server('answer', studentId, talkId, answer);
+
+			return false;
+		});
+
+		$('body').prepend(dialog);
+
+		if(students[studentId]) 
+			students[studentId].push(talkId);
+		else
+			students[studentId] = [talkId];			
+
+		return (dialogs[studentId + '-' + talkId] = {
+			remove : function(){
+				dialog.remove();
+				delete dialogs[studentId + '-' + talkId];
+			},
+
+			ask : function(content){
+				var student = $(studentHTML);
+			
+				student.find('.content').html(content);
+				dialog.find('.list').prepend(student);
+			}
+		});
 	}
-};
 
-window.net.client = {
-	startTalk : function(id, text, url){
-		console.log(arguments);
-	},
+	window.net.client = {
+		startTalk : function(studentId, talkId, content, url){
+			createDialog(studentId, talkId, content, url);
+		},
 
-	ask : function(id, text){
-		console.log(arguments);
-	},
+		ask : function(studentId, talkId, content){
+			dialogs[studentId + '-' + talkId].ask(content);
+		},
 
-	closeTalk : function(studentId){
-		console.log(arguments);		
+		closeTalk : function(studentId){
+			var itms = students[studentId];
+			if(itms) {
+				for(var i=0;i<itms.length;i++){
+					dialogs[studentId + '-' + itms[i]].remove();
+				}
+			}
+
+			delete students[studentId];
+		}
 	}
-}
 
-$(function(){		
 	window.net.connect(function(){
 		
 	});
