@@ -21,6 +21,7 @@
 		studentTmpl,
 		tips = [],
 		noop = function(){};
+		window.tips = tips; //for debug
 
 	var $ = {
 		dom : function(html) {
@@ -90,7 +91,7 @@
 				postMessage('ask', id, text);
 			});
 			tips.push(tip);
-			postMessage('new', id, selected.innerText, location.href);
+			postMessage('startTalk', id, selected.innerText, location.href);
 			selected = null;
 		}
 
@@ -232,6 +233,7 @@
 			});
 
 			document.body.addEventListener('mousemove', move);
+			document.body.style.webkitUserSelect = 'none';
 		}
 
 		function move(e) {
@@ -245,11 +247,11 @@
 		
 		function up(e) {
 			document.body.removeEventListener('mousemove', move);
+			document.body.style.webkitUserSelect = '';
 		}
 
 		el.addEventListener('mousedown', down);
 		el.addEventListener('mouseup', up);
-		el.addEventListener('mouseout', up);
 	}
 
 	function startSelect(){
