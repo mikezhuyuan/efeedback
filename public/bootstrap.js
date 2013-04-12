@@ -12,7 +12,7 @@
 	var undefined,
 		emptyArray = [], 
 		slice = emptyArray.slice, 		
-		iframeUrl = 'http://localhost:9990/service.html',
+		iframeUrl = 'http://cns-855:9990/service.html',
 		selected,
 		overlay,
 		dialog, 
@@ -144,7 +144,7 @@
 		});
 
 		dialog.ask(function(text){
-			el.style.backgroundImage = 'url(http://localhost:9990/coffee.png)';
+			el.style.backgroundImage = 'url(http://cns-855:9990/coffee.png)';
 			onask(text);
 		});
 
@@ -155,7 +155,7 @@
 		return {
 			el : el,
 			answer : function(html){
-				el.style.backgroundImage = 'url(http://localhost:9990/mail.png)';
+				el.style.backgroundImage = 'url(http://cns-855:9990/mail.png)';
 				dialog.answer(html);
 			},
 			ask : function(callback) {
@@ -282,7 +282,7 @@
 		reciever[data.method].apply(null, data.args);
 	}
 
-	var iframe = $.dom('<iframe src="' + iframeUrl + '" name="efrog_service" style="top: 99999px; left: 99999px; position: absolute; width:1024px; height:1024px"></iframe>');
+	var iframe = $.dom('<iframe src="' + iframeUrl + '" name="efrog_service" style="top: -99999px; left: -99999px; position: absolute; width:1024px; height:1024px"></iframe>');
 
 	document.body.appendChild(iframe);
 
